@@ -1,0 +1,66 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tra-algorithm"
+authors = [
+    {name = "TRA Algorithm Team", email = "contact@tra-algorithm.com"},
+]
+description = "Track/Rail Algorithm (TRA) - A novel machine learning algorithm for dynamic model selection"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.7"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "numpy>=1.19.0",
+    "pandas>=1.1.0",
+    "scikit-learn>=1.0.0",
+    "matplotlib>=3.3.0",
+    "joblib>=1.0.0",
+    "networkx>=2.5",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=6.0",
+    "pytest-cov>=2.10",
+    "black>=21.0",
+    "flake8>=3.8",
+    "sphinx>=4.0",
+    "sphinx-rtd-theme>=0.5",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/tra-algorithm"
+"Bug Reports" = "https://github.com/yourusername/tra-algorithm/issues"
+Source = "https://github.com/yourusername/tra-algorithm"
+Documentation = "https://tra-algorithm.readthedocs.io/"
+
+[tool.setuptools_scm]
+write_to = "tra_algorithm/_version.py"
+
+[tool.black]
+line-length = 88
+target-version = ['py37']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
