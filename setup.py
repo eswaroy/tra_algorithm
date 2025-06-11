@@ -7,17 +7,19 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 # Read version from version.py
-exec(open('tra_algorithm/version.py').read())
+version_ns = {}
+with open(os.path.join(this_directory, 'tra_algorithm', 'version.py')) as f:
+    exec(f.read(), version_ns)
 
 setup(
     name="tra-algorithm",
-    version=__version__,
-    author="Your Name",
-    author_email="your.email@example.com",
+    version=version_ns["__version__"],
+    author="Dasari Ranga Eswar",
+    author_email="rangaeswar890@gmail.com",
     description="Track/Rail Algorithm (TRA) - A novel machine learning algorithm for dynamic model selection",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/tra-algorithm",
+    url="https://github.com/eswaroy/tra_algorithm",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -55,8 +57,8 @@ setup(
     },
     keywords="machine learning, algorithm, dynamic model selection, ensemble, classification, regression",
     project_urls={
-        "Bug Reports": "https://github.com/yourusername/tra-algorithm/issues",
-        "Source": "https://github.com/yourusername/tra-algorithm",
+        "Bug Reports": "https://github.com/eswaroy/tra_algorithm/issues",
+        "Source": "https://github.com/eswaroy/tra_algorithm",
         "Documentation": "https://tra-algorithm.readthedocs.io/",
     },
     include_package_data=True,

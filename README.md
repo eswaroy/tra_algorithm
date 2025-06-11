@@ -31,8 +31,8 @@ pip install tra-algorithm
 For development installation:
 
 ```bash
-git clone https://github.com/yourusername/tra-algorithm.git
-cd tra-algorithm
+git clone https://github.com/eswaroy/tra_algorithm.git
+cd tra_algorithm
 pip install -e ".[dev]"
 ```
 
