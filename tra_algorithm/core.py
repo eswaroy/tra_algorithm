@@ -686,10 +686,9 @@ class OptimizedTRA(BaseEstimator, ClassifierMixin, RegressorMixin):
         
         # Color nodes by performance
         node_colors = [self.tracks[node].performance_score for node in G.nodes()]
-        
         # Draw nodes with size based on usage
         node_sizes = [max(1000, self.tracks[node].usage_count * 50) for node in G.nodes()]
-        nx.draw_networkx_nodes(G, pos, node_color=node_colors, 
+        nodes = nx.draw_networkx_nodes(G, pos, node_color=node_colors, 
                              node_size=node_sizes, alpha=0.8, cmap='RdYlBu')
         
         # Draw labels
@@ -702,7 +701,7 @@ class OptimizedTRA(BaseEstimator, ClassifierMixin, RegressorMixin):
         
         plt.title("Enhanced Optimized TRA Structure\n(Node color: performance, Node size: usage, Edge width: confidence)", 
                  fontsize=14, fontweight='bold')
-        plt.colorbar(plt.cm.ScalarMappable(cmap='RdYlBu'), label='Track Performance')
+        plt.colorbar(nodes, label='Track Performance')
         plt.axis('off')
         
         if output_file:
