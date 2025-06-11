@@ -47,10 +47,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/tra-algorithm"
-"Bug Reports" = "https://github.com/yourusername/tra-algorithm/issues"
-Source = "https://github.com/yourusername/tra-algorithm"
-Documentation = "https://tra-algorithm.readthedocs.io/"
+Homepage = "https://github.com/eswaroy/tra_algorithm"
+"Bug Reports" = "https://github.com/eswaroy/tra_algorithm/issues"
+Source = "https://github.com/eswaroy/tra_algorithm"
+Documentation = "https://tra_algorithm.readthedocs.io/"
 
 [tool.setuptools_scm]
 write_to = "tra_algorithm/_version.py"
