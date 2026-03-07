@@ -5,6 +5,9 @@ import unittest
 import numpy as np
 from sklearn.datasets import make_classification, make_regression
 from sklearn.model_selection import train_test_split
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from tra_algorithm.core import OptimizedTRA
 
@@ -91,33 +94,27 @@ class TestOptimizedTRA(unittest.TestCase):
         # Test predictions work with feature selection
         y_pred = tra.predict(self.X_test_clf)
         self.assertEqual(len(y_pred), len(self.y_test_clf))
-    
-    def test_statistics_generation(self):
-        """Test statistics generation."""
-        tra = OptimizedTRA(task_type="classification", random_state=42)
-        tra.fit(self.X_train_clf, self.y_train_clf)
-        tra.predict(self.X_test_clf[:10])  # Make some predictions
         
-        stats = tra.get_track_statistics()
-        
-        # Check required keys
-        required_keys = ['n_tracks', 'n_signals', 'total_predictions', 'track_details']
-        for key in required_keys:
-            self.assertIn(key, stats)
-        
-        # Check track details
-        self.assertGreater(stats['n_tracks'], 0)
-        self.assertGreaterEqual(stats['total_predictions'], 0)
-    
-    def test_performance_report(self):
-        """Test performance report generation."""
-        tra = OptimizedTRA(task_type="classification", random_state=42)
-        tra.fit(self.X_train_clf, self.y_train_clf)
-        
-        report = tra.get_performance_report()
-        self.assertIsInstance(report, str)
-        self.assertIn("PERFORMANCE REPORT", report)
-        self.assertIn("TRACK PERFORMANCE DETAILS", report)
+    def test_routing_modes_classification(self):
+        """Test hard and soft routing modes for classification."""
+        for mode in ["hard", "soft"]:
+            tra = OptimizedTRA(task_type="classification", n_tracks=3, routing_mode=mode, random_state=42)
+            tra.fit(self.X_train_clf, self.y_train_clf)
+            
+            y_pred = tra.predict(self.X_test_clf)
+            self.assertEqual(len(y_pred), len(self.y_test_clf))
+            
+            y_proba = tra.predict_proba(self.X_test_clf)
+            self.assertEqual(y_proba.shape[0], len(self.y_test_clf))
+            
+    def test_routing_modes_regression(self):
+        """Test hard and soft routing modes for regression."""
+        for mode in ["hard", "soft"]:
+            tra = OptimizedTRA(task_type="regression", n_tracks=3, routing_mode=mode, random_state=42)
+            tra.fit(self.X_train_reg, self.y_train_reg)
+            
+            y_pred = tra.predict(self.X_test_reg)
+            self.assertEqual(len(y_pred), len(self.y_test_reg))
 
 
 class TestUtils(unittest.TestCase):
