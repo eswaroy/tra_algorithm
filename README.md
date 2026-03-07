@@ -1,24 +1,32 @@
-# TRA Algorithm - Track/Rail Algorithm
+# TRA Algorithm - Enhanced Track/Rail Algorithm
 
 [![PyPI version](https://badge.fury.io/py/tra-algorithm.svg)](https://badge.fury.io/py/tra-algorithm)
 [![Python versions](https://img.shields.io/pypi/pyversions/tra-algorithm.svg)](https://pypi.org/project/tra-algorithm/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://github.com/yourusername/tra-algorithm/workflows/CI/badge.svg)](https://github.com/yourusername/tra-algorithm/actions)
-[![Coverage Status](https://codecov.io/gh/yourusername/tra-algorithm/branch/main/graph/badge.svg)](https://codecov.io/gh/yourusername/tra-algorithm)
 
 ## Overview
 
-The **Track/Rail Algorithm (TRA)** is a novel ensemble machine learning method that dynamically routes data through specialized "tracks" based on signal conditions. Unlike traditional ensemble methods that combine predictions, TRA creates multiple specialized models (tracks) and intelligently switches between them during prediction based on real-time signal evaluation.
+The **Enhanced Track/Rail Algorithm (TRA)** is a sophisticated **Mixture-of-Experts (MoE)** ensemble machine learning architecture that combines Switch Transformer-inspired routing with signal-guided expert gating. Unlike traditional ensemble methods that combine predictions uniformly, TRA intelligently routes data to specialized expert tracks based on both input features AND structural signals about data difficulty, density, and anomaly scores.
+
+**Core Innovation**: Signal-Guided Routing extracts 5 structural signals (expert disagreement, prediction entropy, feature density, cluster distance, outlier score) to guide MoE routing for improved specialization and reduced expert collapse.
 
 ## Key Features
 
-- 🚄 **Dynamic Track Switching**: Intelligent routing of data through specialized models
-- ⚡ **Parallel Processing**: Optimized signal evaluation with concurrent processing
-- 🎯 **Adaptive Learning**: Self-optimizing parameters based on performance feedback
-- 🔧 **Memory Optimization**: Automatic pruning of underused tracks
-- 📊 **Rich Visualization**: Comprehensive model structure and performance visualization
+- 🏗️ **Mixture-of-Experts Architecture**: 5-8+ heterogeneous expert tracks (RF, LightGBM, XGBoost, SVM, MLP)
+- 🚦 **Signal-Guided Routing**: Structural signal extraction for intelligent expert selection
+- 🤖 **Stronger Router Models**: XGBoost, CatBoost, MLP, or LightGBM with meta-features
+- 🔄 **Soft & Hard Routing Modes**: Temperature-scaled soft routing with weighted averaging
+- ⚖️ **Load Balancing**: Prevents expert collapse via load balancing loss
+- 📊 **Top-K Routing**: Route to multiple experts with confidence-weighted averaging
+- 💾 **Expert Capacity Control**: Limit samples per expert for fairness and efficiency
+- 🌱 **Dynamic Track Spawning**: Automatically create specialists for uncertain regions
+- 🎯 **Track Specialization**: KMeans clustering for region-based expert specialization
+- 📈 **Residual Correction**: TRA-Boost correction track for systematic error reduction
+- 🔄 **Streaming Support**: Out-of-core learning with partial_fit() for incremental training
+- 🧹 **Automatic Track Pruning**: Remove underused tracks for memory optimization
+- 🛑 **Confidence-Based Abstention**: Option to abstain on low-confidence predictions
 - 🧪 **Dual Task Support**: Both classification and regression tasks
-- 📈 **Performance Monitoring**: Detailed statistics and reporting
+- ⚡ **Parallel Processing**: Multi-threaded track predictions with ThreadPoolExecutor
 
 ## Installation
 
@@ -38,7 +46,7 @@ pip install -e ".[dev]"
 
 ## Quick Start
 
-### Classification Example
+### Classification with Advanced Routing
 
 ```python
 from tra_algorithm import OptimizedTRA
@@ -46,208 +54,386 @@ from sklearn.datasets import make_classification
 from sklearn.model_selection import train_test_split
 
 # Create sample data
-X, y = make_classification(n_samples=1000, n_features=20, n_classes=3, n_informative=3, random_state=42)
+X, y = make_classification(n_samples=1000, n_features=20, n_classes=3, n_informative=10, random_state=42)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize and train TRA
+# Initialize Enhanced TRA with Mixture-of-Experts
 tra = OptimizedTRA(
     task_type="classification",
-    n_tracks=5,
-    random_state=42,
-    parallel_signals=True,
-    enable_track_pruning=True
+    n_tracks=5,                          # 5 heterogeneous expert tracks
+    router_type="xgboost",              # Stronger router model
+    routing_mode="soft",                # Soft weighted routing
+    routing_temperature=1.0,            # Temperature scaling
+    top_k=2,                           # Route to top 2 experts
+    use_meta_features=True,             # Use router meta-features
+    cluster_experts=True,               # KMeans specialization
+    enable_correction_track=True,       # TRA-Boost correction
+    enable_track_pruning=True,          # Automatic pruning
+    random_state=42
 )
 
 tra.fit(X_train, y_train)
 
-# Make predictions
+# Predictions with MoE routing
 y_pred = tra.predict(X_test)
 y_proba = tra.predict_proba(X_test)
 
-# Evaluate performance
+# Evaluate
 accuracy = tra.score(X_test, y_test)
 print(f"Accuracy: {accuracy:.4f}")
 ```
 
-### Regression Example
+### Regression with Signal-Guided Routing
 
 ```python
 from tra_algorithm import OptimizedTRA
 from sklearn.datasets import make_regression
+from sklearn.model_selection import train_test_split
 
-# Create sample data
-X, y = make_regression(n_samples=1000, n_features=15, random_state=42)
+# Create regression data
+X, y = make_regression(n_samples=1000, n_features=15, n_informative=10, random_state=42)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize and train TRA for regression
+# Enhanced TRA for regression
 tra = OptimizedTRA(
     task_type="regression",
-    n_tracks=4,
-    signal_threshold=0.15,
-    feature_selection=True
+    n_tracks=5,                         # 5 specialized expert tracks
+    router_type="lightgbm",            # LightGBM router
+    routing_mode="soft",                # Soft routing with weighted averaging
+    feature_selection=True,             # Adaptive feature selection (keeps 60%)
+    handle_imbalanced=False,            # Not applicable for regression
+    random_state=42
 )
 
 tra.fit(X_train, y_train)
 y_pred = tra.predict(X_test)
 
-# Get performance metrics
-mse_score = -tra.score(X_test, y_test)  # Negative MSE
+# Negative MSE as score
+mse_score = -tra.score(X_test, y_test)
 print(f"MSE: {mse_score:.4f}")
+```
+
+### Streaming Data with Out-of-Core Learning
+
+```python
+# Batch 1: Initial training
+tra = OptimizedTRA(task_type="classification", n_tracks=3, random_state=42)
+tra.fit(X_batch1, y_batch1)
+
+# Batch 2: Incremental learning
+tra.partial_fit(X_batch2, y_batch2)
+
+# Batch 3: More data
+tra.partial_fit(X_batch3, y_batch3)
+
+# Trained router now evaluates both old and new tracks for concept drift
+y_pred = tra.predict(X_test)
 ```
 
 ## Advanced Features
 
-### Model Visualization
+### Hard vs. Soft Routing
 
 ```python
-# Visualize the TRA structure
-tra.visualize("tra_structure.png", figsize=(12, 8))
-
-# Get detailed performance report
-print(tra.get_performance_report())
-
-# Get track statistics
-stats = tra.get_track_statistics()
-```
-
-### Parameter Optimization
-
-```python
-# Optimize parameters using validation data
-X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.2)
+# Hard Routing: Route to single best expert
+tra = OptimizedTRA(routing_mode="hard", n_tracks=5)
 tra.fit(X_train, y_train)
-optimization_results = tra.optimize_parameters(X_val, y_val)
+predictions = tra.predict(X_test)  # Single expert per sample
+
+# Soft Routing: Weighted average across experts
+tra = OptimizedTRA(routing_mode="soft", routing_temperature=1.0, top_k=3)
+tra.fit(X_train, y_train)
+predictions = tra.predict(X_test)  # Blended from top 3 experts
 ```
 
-### Model Persistence
+### Temperature Scaling for Routing
 
 ```python
-# Save and load models
-tra.save_model("my_tra_model.joblib")
-loaded_tra = OptimizedTRA.load_model("my_tra_model.joblib")
+# Lower temperature = sharper, more decisive routing
+tra_sharp = OptimizedTRA(routing_temperature=0.5)  # Sharp expert selection
+
+# Higher temperature = smoother, more uniform routing
+tra_smooth = OptimizedTRA(routing_temperature=2.0)  # Blended predictions
+```
+
+### Dynamic Expert Spawning
+
+```python
+# Automatically create specialists for uncertain regions
+tra = OptimizedTRA(
+    confidence_spawn_threshold=0.3,  # Spawn if >30% predictions are uncertain
+    max_dynamic_tracks=3              # Max 3 dynamically created tracks
+)
+tra.fit(X_train, y_train)
+# During prediction, new experts appear for ambiguous samples
+```
+
+### Confidence-Based Prediction Abstention
+
+```python
+# Abstain (refuse to predict) on low-confidence cases
+tra = OptimizedTRA(
+    task_type="classification",
+    abstention_threshold=0.5,   # Abstain if confidence < 50%
+    abstention_class="UNKNOWN"  # Return "UNKNOWN" instead of prediction
+)
+tra.fit(X_train, y_train)
+y_pred = tra.predict(X_test)
+# Some predictions will be "UNKNOWN" for uncertain samples
+```
+
+### Expert Track Specialization
+
+```python
+# Cluster-based specialization: each expert learns a data region
+tra_clustered = OptimizedTRA(cluster_experts=True, n_tracks=5)
+tra_clustered.fit(X_train, y_train)  # Each track specializes to a KMeans cluster
+
+# vs. Bootstrap-based: each expert gets random samples
+tra_bootstrap = OptimizedTRA(cluster_experts=False, n_tracks=5)
+tra_bootstrap.fit(X_train, y_train)  # Each track gets bootstrap resamples
+```
+
+### Custom Expert Track Models
+
+```python
+from sklearn.ensemble import GradientBoostingClassifier, ExtraTreesClassifier
+
+custom_models = [
+    GradientBoostingClassifier(n_estimators=100),
+    ExtraTreesClassifier(n_estimators=100),
+    RandomForestClassifier(n_estimators=100),
+]
+
+tra = OptimizedTRA(task_type="classification", track_models=custom_models)
+tra.fit(X_train, y_train)
+```
+
+### Model Inspection
+
+```python
+# Get track statistics
+print(f"Number of expert tracks: {len(tra.tracks)}")
+print(f"Router type: {tra.router_type}")
+print(f"Routing mode: {tra.routing_mode}")
+
+# Access individual tracks
+for track_name, track in tra.tracks.items():
+    print(f"{track_name}: {track.performance_score:.3f}")
+    print(f"  Usage count: {track.usage_count}")
+    print(f"  Avg prediction time: {track.get_average_prediction_time():.4f}s")
 ```
 
 ## Algorithm Details
 
-### How TRA Works
+### Architecture Overview
 
-1. **Track Creation**: Multiple specialized models (tracks) are trained on different bootstrap samples
-2. **Signal Generation**: Signals are created between tracks to detect when switching is beneficial
-3. **Dynamic Routing**: During prediction, data is routed through tracks based on signal evaluation
-4. **Performance Optimization**: Tracks and signals are continuously monitored and optimized
+The Enhanced TRA implements a sophisticated Mixture-of-Experts (MoE) system with 11 integrated improvements:
+
+```
+Input Data
+    ↓
+Preprocessing (Scaling, Imputation, Handling Missing Values)
+    ↓
+Feature Selection (Adaptive 60% feature retention)
+    ↓
+Signal Extraction Layer (5 structural signals)
+    ├→ Expert Disagreement (std of track predictions)
+    ├→ Prediction Entropy (entropy of router probabilities)
+    ├→ Feature Density Score (k-NN distance-based)
+    ├→ Cluster Distance (KMeans centroid distance)
+    └→ Outlier Score (IsolationForest anomaly detection)
+    ↓
+Stronger Router (XGBoost/CatBoost/MLP/LightGBM)
+    ↓
+Expert Tracks (Heterogeneous ensemble: RF, LightGBM, XGBoost, SVM, MLP)
+    ├→ Track Specialization (KMeans clustering or bootstrap sampling)
+    └→ Top-K Soft Routing (weighted averaging with temperature scaling)
+    ↓
+Correction Track (TRA-Boost): Residual error correction
+    ↓
+Final Prediction
+```
+
+### 11 Integrated Improvements
+
+1. **Stronger Router**: Multiple backend options (XGBoost, CatBoost, MLP, LightGBM) instead of simple decision trees
+2. **Heterogeneous Expert Tracks**: Diverse model types per track (RF, LightGBM, XGBoost, SVM, MLP) for diverse expertise
+3. **Increased Tracks**: Support for 5-8+ expert tracks enabling fine-grained specialization
+4. **Load Balancing Loss**: Prevents expert collapse and ensures balanced utilization across experts
+5. **Top-K Routing**: Route to multiple experts with confidence-weighted averaging instead of hard expert selection
+6. **Expert Capacity Control**: Limit samples per expert for fairness and memory efficiency
+7. **Router Meta-Features**: Augment router input with track disagreement signals and structural signals
+8. **Temperature-Scaled Soft Routing**: Smooth routing boundaries via temperature scaling (prevents sharp switches)
+9. **Dynamic Track Spawning**: Automatically create specialized tracks for uncertain regions during inference
+10. **Track Specialization via Clustering**: KMeans-based clustering assigns data regions to experts
+11. **Signal-Guided Routing**: Structural signal extraction layer for awareness of data geometry and expert consensus
+
+### How It Works
+
+**Training Phase:**
+1. Split data into 80% track training and 20% router holdout set
+2. Create K heterogeneous expert tracks with bootstrap sampling or KMeans clustering
+3. Extract structural signals (disagreement, entropy, density, cluster distance, outlier) from training data
+4. Train the Stronger Router on holdout set to learn which expert is best per sample
+5. Optionally train a residual correction track on misclassified samples (TRA-Boost)
+
+**Prediction Phase:**
+1. Preprocess input, extract features, compute structural signals
+2. Use Stronger Router to get routing probabilities to each expert
+3. **Hard Routing**: Select single best expert and use its prediction
+4. **Soft Routing**: Weight all experts by router confidence, average predictions with temperature scaling
+5. Apply correction track if available (especially for regression)
+6. Confidence-based abstention if requested
+7. Monitor for concept drift and dynamically spawn new specialists if needed
 
 ### Key Components
 
-- **Tracks**: Specialized models trained on different data subsets
-- **Signals**: Conditions that trigger switching between tracks
-- **Records**: Individual data points with routing history
-- **Enhanced Signal Conditions**: Advanced switching logic with regression optimization
+- **EnhancedTRA**: Main class implementing the Mixture-of-Experts algorithm
+- **SignalExtractor**: Computes 5 structural signals for routing guidance
+- **Track**: Individual expert track with performance monitoring and capacity control
+- **Router**: Stronger routing model trained to select best experts
 
-## Parameters
+## Parameters Reference
 
-### Main Parameters
+### Router & Architecture Parameters
 
-- `task_type`: "classification" or "regression"
-- `n_tracks`: Number of specialized tracks to create (default: 3)
-- `signal_threshold`: Threshold for track switching (default: 0.1)
-- `parallel_signals`: Enable parallel signal evaluation (default: True)
-- `enable_track_pruning`: Enable automatic track pruning (default: True)
-- `feature_selection`: Enable automatic feature selection (default: True)
-- `handle_imbalanced`: Handle class imbalance (classification only, default: True)
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `task_type` | str | "classification" | "classification" or "regression" |
+| `n_tracks` | int | 5 | Number of initial expert tracks |
+| `max_tracks` | int | 8 | Maximum allowed expert tracks |
+| `router_type` | str | "xgboost" | Router backend: "xgboost", "catboost", "mlp", "lightgbm" |
+| `routing_mode` | str | "soft" | "hard" (single expert) or "soft" (weighted average) |
+| `routing_temperature` | float | 1.0 | Temperature for soft routing (lower = sharper, higher = smoother) |
+| `top_k` | int | 1 | Route to top-K experts (soft routing only) |
 
-### Performance Parameters
+### Expert Track Parameters
 
-- `n_estimators`: Number of estimators per track (default: 50)
-- `max_depth`: Maximum depth of track estimators (default: 6)
-- `max_workers`: Maximum parallel workers (default: 4)
-- `pruning_interval`: Interval for track pruning (default: 100)
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `track_models` | list | None | Custom model list for expert tracks |
+| `cluster_experts` | bool | False | Use KMeans clustering for track specialization |
+| `feature_selection` | bool | True | Enable adaptive feature selection (keeps 60% of features) |
+| `n_estimators` | int | 50 | Trees per track estimator |
+| `max_depth` | int | 6 | Max depth for tree-based tracks |
+| `expert_capacity` | float | None | Samples per expert (auto-computed if None) |
 
-## Performance Comparison
+### Enhancement Parameters
 
-TRA has been tested against standard ensemble methods and shows competitive performance with additional benefits:
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `use_meta_features` | bool | True | Augment router input with track disagreement signals |
+| `load_balance_strength` | float | 0.01 | Strength of load balancing loss |
+| `enable_correction_track` | bool | True | Train TRA-Boost correction track |
+| `enable_track_pruning` | bool | True | Automatically prune underused tracks |
+| `confidence_spawn_threshold` | float | 0.3 | Trigger dynamic track spawning at this uncertainty ratio |
+| `max_dynamic_tracks` | int | 3 | Maximum dynamically spawned tracks |
 
-- **Adaptability**: Dynamically adjusts to data patterns
-- **Interpretability**: Clear visualization of decision paths
-- **Efficiency**: Optimized memory usage through track pruning
-- **Robustness**: Handles both classification and regression effectively
+### Other Parameters
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `handle_imbalanced` | bool | True | Compute class weights for imbalanced data |
+| `abstention_threshold` | float | 0.0 | Abstain when router confidence < threshold |
+| `abstention_class` | any | None | Class/value to predict when abstaining |
+| `random_state` | int | None | Random seed for reproducibility |
+| `max_workers` | int | 4 | Max worker threads (capped at 8) |
+| `pruning_interval` | int | 100 | Check track pruning every N predictions |
+
+## Model Persistence
+
+```python
+# Save trained model
+tra.save_model("my_tra_model.joblib")
+
+# Load model (includes metadata)
+loaded_tra = OptimizedTRA.load_model("my_tra_model.joblib")
+
+# Access metadata
+metadata = loaded_tra.metadata  # task_type, n_tracks, n_features, etc.
+```
+
+## Performance & Benchmarking
+
+The Enhanced TRA architecture provides several competitive advantages:
+
+### When TRA Excels
+
+- **High-Dimensional Data**: Adaptive feature selection (60% retention) handles dimensionality well
+- **Multiple Regimes**: Different data distributions → heterogeneous experts specialize
+- **Imbalanced Classes**: Class weight balancing + routing precision
+- **Concept Drift**: Out-of-core learning with partial_fit() adapts to new patterns
+- **Uncertain Regions**: Dynamic track spawning creates specialists for ambiguous boundaries
+- **Regression with Outliers**: Correction track captures systematic residual patterns
+
+### Computational Efficiency
+
+- **Soft Routing**: Weighted average avoids all-or-nothing expert selection
+- **Track Pruning**: Removes underused experts to reduce memory/computation
+- **Parallel Processing**: ThreadPoolExecutor-based concurrent track predictions
+- **Adaptive Features**: 60% feature retention reduces input dimensionality
+- **Expert Capacity Control**: Prevents any single expert from becoming a bottleneck
 
 ## Requirements
 
-- Python >= 3.8
-- numpy >= 1.21.0
-- pandas >= 1.3.0
-- scikit-learn >= 1.0.0
-- matplotlib >= 3.3.0
-- joblib >= 1.0.0
-- networkx >= 2.6.0 (for visualization)
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## Testing
-
-Run tests using pytest:
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=tra_algorithm --cov-report=html
-
-# Run specific test file
-pytest tests/test_core.py
+```
+Python >= 3.8
+numpy >= 1.21.0
+pandas >= 1.3.0
+scikit-learn >= 1.0.0
+matplotlib >= 3.3.0
+joblib >= 1.0.0
+networkx >= 2.6.0 (optional, for visualization)
 ```
 
-## Documentation
+### Optional Dependencies
 
-Detailed documentation is available in the `docs/` directory. Build documentation locally:
-
+For advanced router models:
 ```bash
-cd docs
-make html
+pip install xgboost catboost lightgbm
 ```
 
-## Changelog
+If any optional dependency is missing, TRA gracefully falls back to available implementations.
 
-See [CHANGELOG.md](CHANGELOG.md) for a history of changes.
+## Troubleshooting
 
-## License
+### Router training takes long time
+- Reduce `n_tracks` to 3-4 for faster training
+- Use `router_type="mlp"` which trains faster than tree-based routers
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### High memory usage
+- Enable `enable_track_pruning=True` (default) to remove unused experts
+- Use `cluster_experts=True` to specialize experts to specific data regions
+- Reduce `n_estimators` per track
+
+### Poor performance on new data (concept drift)
+- Use `partial_fit()` to incrementally retrain on new batches
+- Enable `confidence_spawn_threshold < 1.0` to automatically spawn specialists
+- Increase `routing_temperature` for smoother routing decisions
+
+### Soft routing predictions don't change much
+- This is expected! Temperature scaling prevents sharp switches
+- Lower `routing_temperature` for sharper expert selection
+- Try `routing_mode="hard"` to use single expert selection
 
 ## Citation
 
-If you use TRA Algorithm in your research, please cite:
+If you use TRA Algorithm in your research or projects, please cite:
 
 ```bibtex
-@software{tra_algorithm,
-  title={TRA Algorithm: Track/Rail Algorithm for Dynamic Ensemble Learning},
-  author={Dasari Ranga Eswar},
+@software{tra_algorithm2025,
+  title={Enhanced Track/Rail Algorithm: Mixture-of-Experts with Signal-Guided Routing},
+  author={Ranga Eswar, Dasari},
   year={2025},
-  url={https://github.com/eswaroy/tra_algorithm}
+  url={https://github.com/eswaroy/tra_algorithm},
+  note={Version 1.0.4+: 11 improvements integrated including MoE routing, signal-guided expertise, dynamic track spawning}
 }
 ```
 
-## Support
+## Support & Contact
 
-- 📧 Email: rangaeswar890@gmail.com
-- 🐛 Issues: [GitHub Issues](https://github.com/eswaroy/tra_algorithm/issues)
-- 💬 Discussions: [GitHub Discussions](https://github.com/eswaroy/tra_algorithm/discussions)
-
-## Acknowledgments
-
-- Built on top of scikit-learn
-- Inspired by ensemble learning research
-- Thanks to all contributors and users
-
----
-
-**Made with ❤️ by the TRA Algorithm Team**
+- 📧 **Email**: rangaeswar890@gmail.com
+- 🐛 **Issues**: [GitHub Issues](https://github.com/eswaroy/tra_algorithm/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/eswaroy/tra_algorithm/discussions)
+- 📚 **Documentation**: See [docs/](docs/) and [CHANGELOG.md](CHANGELOG.md)
