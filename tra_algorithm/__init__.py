@@ -52,10 +52,14 @@ from .version import __version__
 from .core import (
     OptimizedTRA,
     Track,
-    Signal,
-    Record,
-    EnhancedSignalCondition
+    EnhancedTRA
 )
+
+try:
+    from .core_enhanced import EnhancedTRA as EnhancedTRANew
+except ImportError:
+    EnhancedTRANew = EnhancedTRA
+
 from .utils import (
     create_example_dataset,
     evaluate_model_performance,
@@ -71,10 +75,8 @@ from .examples import (
 __all__ = [
     # Main classes
     'OptimizedTRA',
+    'EnhancedTRA',  # Enhanced version with MoE improvements
     'Track',
-    'Signal', 
-    'Record',
-    'EnhancedSignalCondition',
     
     # Utilities
     'create_example_dataset',

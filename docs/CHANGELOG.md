@@ -6,6 +6,44 @@ All notable changes to the TRA Algorithm package will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-03-07
+
+### Documentation
+- Complete README rewrite documenting actual MoE architecture
+- Added comprehensive architecture diagrams showing signal flow
+- Documented all 11 integrated improvements with technical details
+- Added parameter reference table (20+ parameters)
+- Created advanced features section (hard/soft routing, temperature scaling, dynamic spawning)
+- Added troubleshooting and model inspection guides
+- Included streaming & out-of-core learning examples
+
+### Accuracy Improvements
+- README now accurately represents SignalExtractor with 5 structural signals
+- Documented EnhancedTRA class features matching actual implementation
+- Router backends (XGBoost, CatBoost, MLP, LightGBM) properly explained
+- Correction track (TRA-Boost) functionality documented
+- Confidence-based abstention feature documented
+
+## [1.0.4] - 2026-03-07
+
+### Added
+- Stronger Router implementations (XGBoost, CatBoost, MLP, LightGBM)
+- Heterogeneous Expert Tracks with specialized models
+- Increased Number of Tracks (5-8+) for better specialization
+- Load Balancing Loss for fair expert utilization
+- Top-K Routing for selective expert usage
+- Expert Capacity Control for improved memory efficiency
+- Router Meta-Features for enhanced routing decisions
+- Temperature-Scaled Soft Routing for better convergence
+- Dynamic Track Creation capabilities
+- Track Specialization via K-Means Clustering
+
+### Improved
+- Algorithm performance significantly enhanced with mixture-of-experts approach
+- Switch Transformer-inspired routing mechanism
+- Signal-Guided Routing with structural signal extraction
+- Memory optimization and computational efficiency
+
 ## [1.0.0] - 2024-12-XX
 
 ### Added
