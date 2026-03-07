@@ -10,7 +10,7 @@ authors = [
 description = "Track/Rail Algorithm (TRA) - A novel machine learning algorithm for dynamic model selection"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -18,21 +18,21 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "numpy>=1.19.0",
-    "pandas>=1.1.0",
+    "numpy>=1.21.0",
+    "pandas>=1.3.0",
     "scikit-learn>=1.0.0",
     "matplotlib>=3.3.0",
     "joblib>=1.0.0",
-    "networkx>=2.5",
+    "networkx>=2.6.0",
 ]
 dynamic = ["version"]
 
