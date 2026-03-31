@@ -208,7 +208,7 @@ tra_large = OptimizedTRA(
 )
 
 tra_large.fit(X_train, y_train)
-print(f"Accuracy: {tra_optimal.score(X_test, y_test):.4f}")
+print(f"Accuracy: {tra_large.score(X_test, y_test):.4f}")
 ```
 
 ---
