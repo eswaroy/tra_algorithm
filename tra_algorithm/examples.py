@@ -111,10 +111,10 @@ def basic_classification_example():
     print(classification_report(y_test, y_pred))
     
     # Display track statistics
-    stats = tra_clf.get_track_statistics()
     print(f"\nTRA Statistics:")
-    print(f"Number of tracks: {stats['n_tracks']}")
-    print(f"Number of signals: {stats['n_signals']}")
+    print(f"Number of tracks: {len(tra_clf.tracks)}")
+    print(f"Router type: {tra_clf.router_type}")
+    print(f"Routing mode: {tra_clf.routing_mode}")
     
     return tra_clf, X_test, y_test
 
@@ -177,10 +177,10 @@ def basic_regression_example():
     print(f"R² Score: {r2:.4f}")
     
     # Display track statistics
-    stats = tra_reg.get_track_statistics()
     print(f"\nTRA Statistics:")
-    print(f"Number of tracks: {stats['n_tracks']}")
-    print(f"Number of signals: {stats['n_signals']}")
+    print(f"Number of tracks: {len(tra_reg.tracks)}")
+    print(f"Task type: {tra_reg.task_type}")
+    print(f"Using correction track: {tra_reg.enable_correction_track}")
     
     return tra_reg, X_test, y_test
 
@@ -257,8 +257,9 @@ def real_world_classification_example():
     print(f"Random Forest Accuracy: {rf_accuracy:.4f} (Training time: {rf_training_time:.2f}s)")
     
     # Show TRA performance report
-    print(f"\nTRA Performance Report:")
-    print(tra_clf.get_performance_report())
+    print(f"\nTRA Performance Summary:")
+    test_score = tra_clf.score(X_test, y_test)
+    print(f"Test Accuracy: {test_score:.4f}")
     
     return tra_clf, rf_clf, X_test, y_test
 
@@ -323,9 +324,10 @@ def real_world_regression_example():
     tra_reg.fit(X_train, y_train)
     training_time = time.time() - start_time
     
-    # Optimize parameters using validation set
-    print("Optimizing parameters...")
-    optimization_results = tra_reg.optimize_parameters(X_val, y_val)
+    # Evaluate on validation set
+    print("Evaluating on validation set...")
+    val_score = tra_reg.score(X_val, y_val)
+    print(f"Validation R² Score: {val_score:.4f}")
     
     # Compare with Random Forest
     print("Training Random Forest for comparison...")
@@ -584,13 +586,11 @@ def visualization_example():
     _ = tra_clf.predict(X_test)
     
     try:
-        # Visualize TRA structure
-        print("Creating TRA structure visualization...")
-        tra_clf.visualize("tra_structure_example.png")
-        print("Visualization saved as 'tra_structure_example.png'")
-        
-        # Get and display statistics
-        stats = tra_clf.get_track_statistics()
+        # Display TRA model information
+        print("TRA Model Information:")
+        print(f"- Tracks: {list(tra_clf.tracks.keys())[:3]}...")
+        print(f"- Router type: {tra_clf.router_type}")
+        print(f"- Routing mode: {tra_clf.routing_mode}")
         
         # Create performance comparison plot
         plt.figure(figsize=(12, 8))
@@ -750,14 +750,9 @@ def custom_dataset_example():
     
     # Show TRA-specific insights
     print(f"\nTRA Model Insights:")
-    stats = tra_clf.get_track_statistics()
-    print(f"Active tracks: {stats['n_tracks']}")
-    print(f"Total signals: {stats['n_signals']}")
-    
-    for track_name, details in stats['track_details'].items():
-        if details['usage_count'] > 0:
-            print(f"{track_name}: {details['usage_percentage']:.1f}% usage, "
-                  f"performance: {details['performance_score']:.3f}")
+    print(f"Active tracks: {len(tra_clf.tracks)}")
+    print(f"Routing mode: {tra_clf.routing_mode}")
+    print(f"Signal-guided routing: Enabled")
     
     return tra_clf, X_test_scaled, y_test
 
@@ -877,6 +872,6 @@ def main():
     print("2. Create: tra = OptimizedTRA(task_type='classification')")
     print("3. Train: tra.fit(X_train, y_train)")
     print("4. Predict: y_pred = tra.predict(X_test)")
-    print("5. Evaluate: tra.get_performance_report()")
+    print("5. Evaluate: score = tra.score(X_test, y_test)")
 if __name__ == "__main__":
     main()

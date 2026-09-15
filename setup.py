@@ -20,7 +20,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/eswaroy/tra_algorithm",
-    packages=find_packages(),
+    packages=find_packages(exclude=["tests", "tests.*", "traauto", "traauto.*", "build", "build.*"]),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
